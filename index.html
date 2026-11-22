@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>STUDY WARRIORS | Learn. Practice. Win.</title>
+
+<meta name="description" content="Free educational platform for Class 8, 9 and 10 students. Learn, practice and succeed.">
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #071426;
+    color: white;
+}
+
+/* NAVIGATION */
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 7%;
+    background: #0b1d35;
+    border-bottom: 1px solid #203b60;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg,#2563eb,#06b6d4);
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-size: 27px;
+    box-shadow: 0 0 18px #2563eb66;
+}
+
+.logo h2 {
+    font-size: 21px;
+    letter-spacing: 1px;
+}
+
+.logo span {
+    color: #38bdf8;
+}
+
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-buttons button {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #2563eb;
+    color: white;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* HERO */
+
+.hero {
+    min-height: 490px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 70px 20px;
+    background:
+    radial-gradient(circle at top right,#164e8b66,transparent 45%),
+    linear-gradient(135deg,#071426,#102c50);
+}
+
+.hero-content {
+    max-width: 850px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 30px;
+    background: #123c65;
+    color: #7dd3fc;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+.hero h1 {
+    font-size: clamp(38px,7vw,68px);
+    font-weight: 900;
+    margin-bottom: 20px;
+}
+
+.hero h1 span {
+    color: #38bdf8;
+}
+
+.hero p {
+    color: #c5d5e8;
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.primary-btn {
+    display: inline-block;
+    padding: 15px 28px;
+    background: linear-gradient(135deg,#2563eb,#06b6d4);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.primary-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px #2563eb66;
+}
+
+/* COMMON SECTION */
+
+section {
+    padding: 65px 7%;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-title h2 {
+    font-size: 34px;
+    margin-bottom: 12px;
+}
+
+.section-title p {
+    color: #9fb5ce;
+    line-height: 1.6;
+}
+
+/* CLASS CARDS */
+
+.class-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 25px;
+}
+
+.class-card {
+    padding: 32px 20px;
+    background: linear-gradient(145deg,#122b4a,#0d2038);
+    border: 1px solid #244b76;
+    border-radius: 18px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.class-card:hover {
+    transform: translateY(-9px);
+    border-color: #38bdf8;
+    box-shadow: 0 10px 30px #0005;
+}
+
+.class-card .number {
+    font-size: 48px;
+    font-weight: 900;
+    color: #38bdf8;
+    margin-bottom: 15px;
+}
+
+.class-card h3 {
+    font-size: 23px;
+    margin-bottom: 12px;
+}
+
+.class-card p {
+    color: #a9bed5;
+    margin-bottom: 22px;
+}
+
+.class-card button {
+    background: #2563eb;
+    color: white;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* FEATURES */
+
+.features {
+    background: #0a192d;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
+    gap: 22px;
+}
+
+.feature-card {
+    background: #102744;
+    border: 1px solid #25496e;
+    border-radius: 15px;
+    padding: 28px 20px;
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    border-color: #38bdf8;
+}
+
+.feature-icon {
+    font-size: 38px;
+    margin-bottom: 18px;
+}
+
+.feature-card h3 {
+    margin-bottom: 12px;
+}
+
+.feature-card p {
+    color: #a9bed5;
+    line-height: 1.7;
+}
+
+/* MOTIVATION */
+
+.motivation {
+    text-align: center;
+    background: linear-gradient(135deg,#123b6b,#075985);
+    padding: 65px 20px;
+}
+
+.motivation h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.motivation p {
+    color: #dbeafe;
+    font-size: 17px;
+}
+
+/* FOOTER */
+
+footer {
+    background: #050e1b;
+    padding: 35px 20px;
+    text-align: center;
+    color: #91a7c0;
+}
+
+footer h2 {
+    color: white;
+    margin-bottom: 12px;
+}
+
+footer span {
+    color: #38bdf8;
+}
+
+footer p {
+    margin-top: 10px;
+}
+
+/* MOBILE */
+
+@media(max-width:600px) {
+
+    nav {
+        padding: 13px 4%;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .logo h2 {
+        font-size: 17px;
+    }
+
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 23px;
+    }
+
+    .nav-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero {
+        min-height: 430px;
+    }
+
+    .hero p {
+        font-size: 15px;
+    }
+
+    .section-title h2 {
+        font-size: 27px;
+    }
+
+    section {
+        padding: 45px 5%;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+
+<nav>
+
+    <div class="logo">
+
+        <div class="logo-icon">🪖</div>
+
+        <h2>STUDY <span>WARRIORS</span></h2>
+
+    </div>
+
+    <div class="nav-buttons">
+
+        <button onclick="setLanguage('en')">English</button>
+
+        <button onclick="setLanguage('hi')">हिंदी</button>
+
+    </div>
+
+</nav>
+
+
+<!-- HERO SECTION -->
+
+<header class="hero">
+
+    <div class="hero-content">
+
+        <div class="badge" id="badge">
+            🎓 FREE EDUCATION FOR EVERYONE
+        </div>
+
+        <h1>
+            LEARN. <span>PRACTICE.</span><br>
+            WIN.
+        </h1>
+
+        <p id="heroText">
+            Your journey to success starts here.
+            Learn smarter, practice harder and achieve your dreams.
+            Education is your greatest weapon!
+        </p>
+
+        <a href="#classes" class="primary-btn" id="startBtn">
+            START LEARNING →
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- CLASSES -->
+
+<section id="classes">
+
+    <div class="section-title">
+
+        <h2 id="classTitle">⚔️ CHOOSE YOUR CLASS</h2>
+
+        <p id="classSubtitle">
+            Select your class and begin your learning journey.
+        </p>
+
+    </div>
+
+    <div class="class-grid">
+
+        <div class="class-card">
+
+            <div class="number">08</div>
+
+            <h3 id="class8">CLASS 8</h3>
+
+            <p id="class8Text">Build Your Foundation</p>
+
+            <button onclick="selectClass(8)" id="btn8">
+                Explore Class 8
+            </button>
+
+        </div>
+
+
+        <div class="class-card">
+
+            <div class="number">09</div>
+
+            <h3 id="class9">CLASS 9</h3>
+
+            <p id="class9Text">Upgrade Your Knowledge</p>
+
+            <button onclick="selectClass(9)" id="btn9">
+                Explore Class 9
+            </button>
+
+        </div>
+
+
+        <div class="class-card">
+
+            <div class="number">10</div>
+
+            <h3 id="class10">CLASS 10</h3>
+
+            <p id="class10Text">Prepare For Success</p>
+
+            <button onclick="selectClass(10)" id="btn10">
+                Explore Class 10
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FEATURES -->
+
+<section class="features">
+
+    <div class="section-title">
+
+        <h2 id="featureTitle">🚀 OUR LEARNING ZONE</h2>
+
+        <p id="featureSubtitle">
+            Everything you need to become a champion.
+        </p>
+
+    </div>
+
+    <div class="feature-grid">
+
+        <div class="feature-card">
+
+            <div class="feature-icon">📝</div>
+
+            <h3 id="mcqTitle">MCQ PRACTICE</h3>
+
+            <p id="mcqText">
+                Practice multiple choice questions and test your knowledge.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">📚</div>
+
+            <h3 id="qaTitle">IMPORTANT Q&A</h3>
+
+            <p id="qaText">
+                Prepare important questions and answers for examinations.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">🧠</div>
+
+            <h3 id="mentalTitle">MENTAL MATHS</h3>
+
+            <p id="mentalText">
+                Improve your calculation speed and brain power.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">🔍</div>
+
+            <h3 id="reasonTitle">REASONING</h3>
+
+            <p id="reasonText">
+                Challenge your mind with logic and reasoning puzzles.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- MOTIVATION -->
+
+<section class="motivation">
+
+    <h2 id="motiveTitle">
+        BE A WARRIOR. BUILD YOUR FUTURE. 🛡️
+    </h2>
+
+    <p id="motiveText">
+        Your hard work today will become your success tomorrow.
+    </p>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <h2>⚔️ STUDY <span>WARRIORS</span></h2>
+
+    <p id="footerText">
+        Free Education For Every Student.
+    </p>
+
+    <p>© 2026 Study Warriors. All Rights Reserved.</p>
+
+</footer>
+
+
+<script>
+
+/* LANGUAGE SYSTEM */
+
+function setLanguage(lang) {
+
+const translations = {
+
+en: {
+
+badge: "🎓 FREE EDUCATION FOR EVERYONE",
+
+heroText: "Your journey to success starts here. Learn smarter, practice harder and achieve your dreams. Education is your greatest weapon!",
+
+startBtn: "START LEARNING →",
+
+classTitle: "⚔️ CHOOSE YOUR CLASS",
+
+classSubtitle: "Select your class and begin your learning journey.",
+
+class8: "CLASS 8",
+
+class9: "CLASS 9",
+
+class10: "CLASS 10",
+
+class8Text: "Build Your Foundation",
+
+class9Text: "Upgrade Your Knowledge",
+
+class10Text: "Prepare For Success",
+
+btn8: "Explore Class 8",
+
+btn9: "Explore Class 9",
+
+btn10: "Explore Class 10",
+
+featureTitle: "🚀 OUR LEARNING ZONE",
+
+featureSubtitle: "Everything you need to become a champion.",
+
+mcqTitle: "MCQ PRACTICE",
+
+mcqText: "Practice multiple choice questions and test your knowledge.",
+
+qaTitle: "IMPORTANT Q&A",
+
+qaText: "Prepare important questions and answers for examinations.",
+
+mentalTitle: "MENTAL MATHS",
+
+mentalText: "Improve your calculation speed and brain power.",
+
+reasonTitle: "REASONING",
+
+reasonText: "Challenge your mind with logic and reasoning puzzles.",
+
+motiveTitle: "BE A WARRIOR. BUILD YOUR FUTURE. 🛡️",
+
+motiveText: "Your hard work today will become your success tomorrow.",
+
+footerText: "Free Education For Every Student."
+
+},
+
+hi: {
+
+badge: "🎓 सभी के लिए मुफ्त शिक्षा",
+
+heroText: "सफलता की शुरुआत यहाँ से होती है। बेहतर सीखें, मेहनत से अभ्यास करें और अपने सपनों को पूरा करें। शिक्षा आपका सबसे बड़ा हथियार है!",
+
+startBtn: "पढ़ाई शुरू करें →",
+
+classTitle: "⚔️ अपनी कक्षा चुनें",
+
+classSubtitle: "अपनी कक्षा चुनें और पढ़ाई शुरू करें।",
+
+class8: "कक्षा 8",
+
+class9: "कक्षा 9",
+
+class10: "कक्षा 10",
+
+class8Text: "अपनी नींव मजबूत बनाएँ",
+
+class9Text: "अपना ज्ञान बढ़ाएँ",
+
+class10Text: "सफलता की तैयारी करें",
+
+btn8: "कक्षा 8 खोलें",
+
+btn9: "कक्षा 9 खोलें",
+
+btn10: "कक्षा 10 खोलें",
+
+featureTitle: "🚀 हमारा लर्निंग ज़ोन",
+
+featureSubtitle: "चैंपियन बनने के लिए सभी जरूरी सुविधाएँ।",
+
+mcqTitle: "MCQ अभ्यास",
+
+mcqText: "बहुविकल्पीय प्रश्न हल करें और अपना ज्ञान जाँचें।",
+
+qaTitle: "महत्वपूर्ण प्रश्न-उत्तर",
+
+qaText: "परीक्षा के लिए महत्वपूर्ण प्रश्न और उत्तर पढ़ें।",
+
+mentalTitle: "मेंटल मैथ्स",
+
+mentalText: "अपनी गणना की गति और दिमाग तेज करें।",
+
+reasonTitle: "रीजनिंग",
+
+reasonText: "तर्क और पहेलियों से अपने दिमाग को चुनौती दें।",
+
+motiveTitle: "एक योद्धा बनो। अपना भविष्य बनाओ। 🛡️",
+
+motiveText: "आज की मेहनत कल तुम्हारी सफलता बनेगी।",
+
+footerText: "हर विद्यार्थी के लिए मुफ्त शिक्षा।"
+
+}
+
+};
+
+const data = translations[lang];
+
+Object.keys(data).forEach(id => {
+
+const element = document.getElementById(id);
+
+if(element) {
+
+element.innerText = data[id];
+
+}
+
+});
+
+document.documentElement.lang = lang;
+
+}
+
+
+/* CLASS BUTTON */
+
+function selectClass(number) {
+
+alert("Welcome to Class " + number + "! Study materials are being prepared.");
+
+}
+
+</script>
+
+</body>
+</html>
