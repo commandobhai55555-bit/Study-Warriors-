@@ -1,11 +1,8 @@
-/* ==========================================
-   STUDY WARRIORS
-   Complete Learning & Quiz Engine
-   ========================================== */
+/* =========================================================
+   STUDY WARRIORS — QUIZ ENGINE V2
+   ========================================================= */
 
 "use strict";
-
-/* ---------- SETTINGS ---------- */
 
 const SW = {
     language: "en",
@@ -18,14 +15,13 @@ const SW = {
     answers: {},
     review: [],
     submitted: false,
-    mode: "study"
+    mode: "study",
+    important: [],
+    view: "home"
 };
-
-/* ---------- LANGUAGE TEXT ---------- */
 
 const SW_TEXT = {
     en: {
-        home: "Home",
         classes: "Choose Class",
         board: "Choose Board",
         subject: "Choose Subject",
@@ -34,7 +30,7 @@ const SW_TEXT = {
         next: "Next",
         previous: "Previous",
         skip: "Skip",
-        review: "Mark for Review",
+        mark: "Mark for Review",
         clear: "Clear Answer",
         submit: "Submit Test",
         correct: "Correct Answer!",
@@ -51,22 +47,19 @@ const SW_TEXT = {
         noQuestions: "Questions are not available yet.",
         select: "Select",
         mentality: "Mentality Test",
-        mentalMath: "Mental Maths",
-        maths: "Mathematics Practice",
-        reasoning: "Logical Reasoning",
-        verbal: "Verbal Reasoning",
-        nonverbal: "Non-Verbal Reasoning",
-        puzzles: "Puzzles",
-        speed: "Speed Test",
-        iq: "IQ Practice",
         marked: "Marked for Review",
         completed: "Test Completed",
         question: "Question",
-        of: "of"
+        of: "of",
+        important: "Important Questions & Answers",
+        showImportant: "Important Q&A",
+        answer: "Answer",
+        reviewAnswers: "Review Answers",
+        home: "Home",
+        noImportant: "Important Q&A are not available yet."
     },
 
     hi: {
-        home: "होम",
         classes: "कक्षा चुनें",
         board: "बोर्ड चुनें",
         subject: "विषय चुनें",
@@ -75,7 +68,7 @@ const SW_TEXT = {
         next: "अगला",
         previous: "पिछला",
         skip: "छोड़ें",
-        review: "रिव्यू के लिए मार्क करें",
+        mark: "रिव्यू के लिए मार्क करें",
         clear: "उत्तर हटाएँ",
         submit: "टेस्ट जमा करें",
         correct: "सही उत्तर!",
@@ -89,36 +82,32 @@ const SW_TEXT = {
         score: "प्रतिशत",
         retry: "दोबारा टेस्ट दें",
         back: "वापस",
-        noQuestions: "अभी इस अध्याय के प्रश्न उपलब्ध नहीं हैं।",
+        noQuestions: "अभी प्रश्न उपलब्ध नहीं हैं।",
         select: "चुनें",
         mentality: "मेंटलिटी टेस्ट",
-        mentalMath: "मेंटल मैथ्स",
-        maths: "मैथ्स प्रैक्टिस",
-        reasoning: "लॉजिकल रीजनिंग",
-        verbal: "वर्बल रीजनिंग",
-        nonverbal: "नॉन-वर्बल रीजनिंग",
-        puzzles: "पहेलियाँ",
-        speed: "स्पीड टेस्ट",
-        iq: "IQ प्रैक्टिस",
-        marked: "रिव्यू के लिए मार्क किए गए",
+        marked: "रिव्यू के लिए मार्क",
         completed: "टेस्ट पूरा हुआ",
         question: "प्रश्न",
-        of: "में से"
+        of: "में से",
+        important: "महत्वपूर्ण प्रश्न और उत्तर",
+        showImportant: "महत्वपूर्ण प्रश्न",
+        answer: "उत्तर",
+        reviewAnswers: "उत्तर देखें",
+        home: "होम",
+        noImportant: "अभी महत्वपूर्ण प्रश्न-उत्तर उपलब्ध नहीं हैं।"
     }
 };
 
 const SW_MENTALITY = {
-    "Mental Maths": "mentalMath",
-    "Mathematics Practice": "maths",
-    "Logical Reasoning": "reasoning",
-    "Verbal Reasoning": "verbal",
-    "Non-Verbal Reasoning": "nonverbal",
-    "Puzzles": "puzzles",
-    "Speed Test": "speed",
-    "IQ Practice": "iq"
+    "Mental Maths": "Mental Maths",
+    "Mathematics Practice": "Mathematics Practice",
+    "Logical Reasoning": "Logical Reasoning",
+    "Verbal Reasoning": "Verbal Reasoning",
+    "Non-Verbal Reasoning": "Non-Verbal Reasoning",
+    "Puzzles": "Puzzles",
+    "Speed Test": "Speed Test",
+    "IQ Practice": "IQ Practice"
 };
-
-/* ---------- HELPERS ---------- */
 
 function SW_t(key) {
     return SW_TEXT[SW.language][key] || key;
@@ -136,9 +125,11 @@ function SW_escape(value) {
 
 function SW_local(value) {
     if (typeof value === "string") return value;
+
     if (value && typeof value === "object") {
-        return value[SW.language] || value.en || value.hi || "";
+        return value[SW.language] ?? value.en ?? value.hi ?? "";
     }
+
     return "";
 }
 
@@ -150,7 +141,7 @@ function SW_app() {
     let app = document.getElementById("study-warriors-app");
 
     if (!app) {
-        app = document.createElement("div");
+        app = document.createElement("main");
         app.id = "study-warriors-app";
 
         const footer = document.querySelector("footer");
@@ -165,7 +156,7 @@ function SW_app() {
     return app;
 }
 
-/* ---------- LANGUAGE ---------- */
+/* LANGUAGE */
 
 function SW_setLanguage(language) {
     if (!SW_TEXT[language]) return;
@@ -173,16 +164,24 @@ function SW_setLanguage(language) {
     SW.language = language;
     document.documentElement.lang = language;
 
-    SW_renderApp();
+    if (SW.view === "quiz") {
+        SW_showQuestion();
+    } else if (SW.view === "result") {
+        SW_showResult();
+    } else if (SW.view === "important") {
+        SW_showImportant();
+    } else {
+        SW_renderApp();
+    }
 }
 
-/* ---------- NAVIGATION ---------- */
+/* NAVIGATION */
 
-function SW_selectClass(classNumber) {
-    SW.currentClass = String(classNumber);
+function SW_selectClass(number) {
+    SW.currentClass = String(number);
     SW.subject = "";
     SW.chapter = "";
-    SW.mode = "study";
+    SW.view = "home";
 
     SW_renderApp();
 }
@@ -191,6 +190,7 @@ function SW_selectBoard(board) {
     SW.board = board;
     SW.subject = "";
     SW.chapter = "";
+    SW.view = "home";
 
     SW_renderApp();
 }
@@ -198,6 +198,7 @@ function SW_selectBoard(board) {
 function SW_selectSubject(subject) {
     SW.subject = subject;
     SW.chapter = "";
+    SW.view = "home";
 
     SW_renderApp();
 }
@@ -205,14 +206,24 @@ function SW_selectSubject(subject) {
 function SW_selectChapter(chapter) {
     SW.chapter = chapter;
 
-    const chapters =
+    const entry =
         SW_bank()[SW.currentClass]?.[SW.board]?.[SW.subject];
 
-    const questions = Array.isArray(chapters)
-        ? chapters
-        : chapters?.[chapter];
+    const chapterData = Array.isArray(entry)
+        ? entry
+        : entry?.[chapter];
 
-    if (!Array.isArray(questions) || questions.length === 0) {
+    const questions = Array.isArray(chapterData)
+        ? chapterData
+        : Array.isArray(chapterData?.questions)
+            ? chapterData.questions
+            : [];
+
+    SW.important = Array.isArray(chapterData?.important)
+        ? chapterData.important
+        : [];
+
+    if (!questions.length) {
         alert(SW_t("noQuestions"));
         return;
     }
@@ -220,24 +231,24 @@ function SW_selectChapter(chapter) {
     SW_startQuiz(questions, "study");
 }
 
-/* ---------- MENTALITY TEST ---------- */
+/* MENTALITY TEST */
 
 function SW_openMentality() {
-    SW.mode = "mentality";
+    SW.view = "mentality";
     SW_renderApp();
 }
 
 function SW_startMentality(category) {
-    const data = window.SW_MENTALITY_TESTS?.[category];
+    const raw = window.SW_MENTALITY_TESTS?.[category];
 
     let questions = [];
 
-    if (Array.isArray(data)) {
-        questions = data;
-    } else if (data && typeof data === "object") {
-        Object.values(data).forEach(value => {
-            if (Array.isArray(value)) {
-                questions.push(...value);
+    if (Array.isArray(raw)) {
+        questions = raw;
+    } else if (raw && typeof raw === "object") {
+        Object.values(raw).forEach(items => {
+            if (Array.isArray(items)) {
+                questions.push(...items);
             }
         });
     }
@@ -250,22 +261,47 @@ function SW_startMentality(category) {
     SW_startQuiz(questions, "mentality");
 }
 
-/* ---------- START QUIZ ---------- */
+/* START QUIZ */
 
 function SW_startQuiz(questions, mode) {
-    SW.questions = [...questions];
+    SW.questions = questions.slice();
     SW.currentQuestion = 0;
     SW.answers = {};
     SW.review = [];
     SW.submitted = false;
     SW.mode = mode;
+    SW.view = "quiz";
 
     SW_showQuestion();
 }
 
-/* ---------- SHOW QUESTION ---------- */
+/* OPTIONS */
+
+function SW_optionList(question) {
+    const options = question.options;
+
+    if (Array.isArray(options)) return options;
+
+    if (options && Array.isArray(options[SW.language])) {
+        return options[SW.language];
+    }
+
+    if (options && Array.isArray(options.en)) {
+        return options.en;
+    }
+
+    if (options && Array.isArray(options.hi)) {
+        return options.hi;
+    }
+
+    return [];
+}
+
+/* SHOW QUESTION */
 
 function SW_showQuestion() {
+    SW.view = "quiz";
+
     const app = SW_app();
     const question = SW.questions[SW.currentQuestion];
 
@@ -276,23 +312,25 @@ function SW_showQuestion() {
 
     const total = SW.questions.length;
     const selected = SW.answers[SW.currentQuestion];
-    const marked = SW.review.includes(SW.currentQuestion);
-
-    const options = SW_local(question.options) ||
-        question.options?.[SW.language] ||
-        question.options?.en ||
-        question.options?.hi ||
-        [];
+    const options = SW_optionList(question);
 
     let html = `
         <section class="quiz-box">
 
-            <h2>${SW_t("question")} 
-            ${SW.currentQuestion + 1} ${SW_t("of")} ${total}</h2>
+            <h2>
+                ${SW_t("question")}
+                ${SW.currentQuestion + 1}
+                ${SW_t("of")}
+                ${total}
+            </h2>
 
-            <p>${SW_t("marked")}: ${SW.review.length}</p>
+            <p>
+                ${SW_t("marked")}: ${SW.review.length}
+            </p>
 
-            <h3>${SW_escape(SW_local(question.question))}</h3>
+            <h3>
+                ${SW_escape(SW_local(question.question))}
+            </h3>
 
             <div id="sw-options">
     `;
@@ -300,11 +338,14 @@ function SW_showQuestion() {
     options.forEach((option, index) => {
         let className = "quiz-option";
 
-        if (selected === index) className += " selected";
+        if (selected === index) {
+            className += " selected";
+        }
 
-        if (SW.submitted) {
-            if (index === question.answer) className += " correct";
-            else if (selected === index) className += " wrong";
+        if (SW.submitted && index === question.answer) {
+            className += " correct";
+        } else if (SW.submitted && selected === index) {
+            className += " wrong";
         }
 
         html += `
@@ -330,15 +371,19 @@ function SW_showQuestion() {
                     ${SW_t("previous")}
                 </button>
 
-                <button id="sw-skip" ${SW.submitted ? "disabled" : ""}>
+                <button id="sw-skip"
+                    ${SW.submitted ? "disabled" : ""}>
                     ${SW_t("skip")}
                 </button>
 
-                <button id="sw-review" ${SW.submitted ? "disabled" : ""}>
-                    ${marked ? "✓ " : ""}${SW_t("review")}
+                <button id="sw-review"
+                    ${SW.submitted ? "disabled" : ""}>
+                    ${SW.review.includes(SW.currentQuestion) ? "✓ " : ""}
+                    ${SW_t("mark")}
                 </button>
 
-                <button id="sw-clear" ${selected === undefined || SW.submitted ? "disabled" : ""}>
+                <button id="sw-clear"
+                    ${(selected === undefined || SW.submitted) ? "disabled" : ""}>
                     ${SW_t("clear")}
                 </button>
 
@@ -354,120 +399,112 @@ function SW_showQuestion() {
                 ${SW_t("submit")}
             </button>
 
+            <button id="sw-home">
+                ${SW_t("home")}
+            </button>
+
         </section>
     `;
 
     app.innerHTML = html;
 
-    document.querySelectorAll("[data-option]").forEach(button => {
+    app.querySelectorAll("[data-option]").forEach(button => {
         button.addEventListener("click", () => {
-            SW_selectAnswer(Number(button.dataset.option));
+            if (!SW.submitted) {
+                SW.answers[SW.currentQuestion] =
+                    Number(button.dataset.option);
+
+                SW_showQuestion();
+            }
         });
     });
 
-    document.getElementById("sw-previous")
-        .addEventListener("click", SW_previous);
+    document.getElementById("sw-previous").onclick = () => {
+        if (SW.currentQuestion > 0) {
+            SW.currentQuestion--;
+            SW_showQuestion();
+        }
+    };
 
-    document.getElementById("sw-next")
-        .addEventListener("click", () => {
-            if (SW.currentQuestion === total - 1) {
-                SW_showResult();
-            } else {
-                SW_next();
-            }
-        });
+    document.getElementById("sw-next").onclick = () => {
+        if (SW.currentQuestion === total - 1) {
+            SW_showResult();
+        } else {
+            SW.currentQuestion++;
+            SW_showQuestion();
+        }
+    };
 
-    document.getElementById("sw-skip")
-        .addEventListener("click", SW_next);
+    document.getElementById("sw-skip").onclick = () => {
+        if (SW.currentQuestion < total - 1) {
+            SW.currentQuestion++;
+            SW_showQuestion();
+        } else {
+            SW_showResult();
+        }
+    };
 
-    document.getElementById("sw-review")
-        .addEventListener("click", SW_toggleReview);
+    document.getElementById("sw-review").onclick = () => {
+        const index = SW.currentQuestion;
 
-    document.getElementById("sw-clear")
-        .addEventListener("click", SW_clearAnswer);
+        SW.review = SW.review.includes(index)
+            ? SW.review.filter(item => item !== index)
+            : [...SW.review, index];
 
-    document.getElementById("sw-submit")
-        .addEventListener("click", SW_showResult);
+        SW_showQuestion();
+    };
+
+    document.getElementById("sw-clear").onclick = () => {
+        delete SW.answers[SW.currentQuestion];
+        SW_showQuestion();
+    };
+
+    document.getElementById("sw-submit").onclick = SW_showResult;
+
+    document.getElementById("sw-home").onclick = () => {
+        SW.view = "home";
+        SW_renderApp();
+    };
 
     if (SW.submitted) {
         SW_showFeedback(question);
     }
 }
 
-/* ---------- ANSWER ---------- */
-
-function SW_selectAnswer(index) {
-    if (SW.submitted) return;
-
-    SW.answers[SW.currentQuestion] = index;
-    SW_showQuestion();
-}
-
-function SW_clearAnswer() {
-    delete SW.answers[SW.currentQuestion];
-    SW_showQuestion();
-}
-
-function SW_toggleReview() {
-    const index = SW.currentQuestion;
-
-    if (SW.review.includes(index)) {
-        SW.review = SW.review.filter(item => item !== index);
-    } else {
-        SW.review.push(index);
-    }
-
-    SW_showQuestion();
-}
-
-/* ---------- QUESTION MOVEMENT ---------- */
-
-function SW_next() {
-    if (SW.currentQuestion < SW.questions.length - 1) {
-        SW.currentQuestion++;
-        SW_showQuestion();
-    }
-}
-
-function SW_previous() {
-    if (SW.currentQuestion > 0) {
-        SW.currentQuestion--;
-        SW_showQuestion();
-    }
-}
-
-/* ---------- FEEDBACK ---------- */
+/* FEEDBACK */
 
 function SW_showFeedback(question) {
     const feedback = document.getElementById("sw-feedback");
+
     if (!feedback) return;
 
     const selected = SW.answers[SW.currentQuestion];
 
-    let html = "";
+    let message;
 
-    if (selected === question.answer) {
-        html += `<h3 style="color:#20c878">✓ ${SW_t("correct")}</h3>`;
-    } else if (selected === undefined) {
-        html += `<h3>${SW_t("unanswered")}</h3>`;
+    if (selected === undefined) {
+        message = SW_t("unanswered");
+    } else if (selected === question.answer) {
+        message = SW_t("correct");
     } else {
-        html += `<h3 style="color:#ff4d5e">✗ ${SW_t("wrong")}</h3>`;
+        message = SW_t("wrong");
     }
 
-    html += `
+    feedback.innerHTML = `
+        <h3>${SW_escape(message)}</h3>
+
         <p class="explanation">
-            ${SW_t("explanation")}:
+            <b>${SW_t("explanation")}:</b>
             ${SW_escape(SW_local(question.explanation))}
         </p>
     `;
-
-    feedback.innerHTML = html;
 }
 
-/* ---------- RESULT ---------- */
+/* RESULTS */
 
 function SW_showResult() {
     SW.submitted = true;
+    SW.view = "result";
 
     let correct = 0;
     let wrong = 0;
@@ -484,8 +521,9 @@ function SW_showResult() {
     });
 
     const total = SW.questions.length;
+
     const percentage = total
-        ? Math.round(correct / total * 100)
+        ? Math.round((correct / total) * 100)
         : 0;
 
     const app = SW_app();
@@ -494,50 +532,115 @@ function SW_showResult() {
         <section class="result-box">
 
             <h2>${SW_t("completed")}</h2>
+
             <h3>${SW_t("result")}</h3>
 
             <p>${SW_t("total")}: ${total}</p>
 
-            <p style="color:#20c878">
+            <p class="correct">
                 ${SW_t("right")}: ${correct}
             </p>
 
-            <p style="color:#ff4d5e">
+            <p class="wrong">
                 ${SW_t("incorrect")}: ${wrong}
             </p>
 
-            <p>${SW_t("unanswered")}: ${unanswered}</p>
+            <p>
+                ${SW_t("unanswered")}: ${unanswered}
+            </p>
 
-            <h2>${SW_t("score")}: ${percentage}%</h2>
+            <h2>
+                ${SW_t("score")}: ${percentage}%
+            </h2>
 
-            <button id="sw-retry">${SW_t("retry")}</button>
+            <button id="sw-retry">
+                ${SW_t("retry")}
+            </button>
 
-            <button id="sw-review-answers">
-                ${SW_t("review")}
+            <button id="sw-review-all">
+                ${SW_t("reviewAnswers")}
+            </button>
+
+            <button id="sw-result-home">
+                ${SW_t("home")}
             </button>
 
         </section>
     `;
 
-    document.getElementById("sw-retry")
-        .addEventListener("click", () => {
-            SW_startQuiz(SW.questions, SW.mode);
-        });
+    document.getElementById("sw-retry").onclick = () => {
+        SW_startQuiz(SW.questions, SW.mode);
+    };
 
-    document.getElementById("sw-review-answers")
-        .addEventListener("click", () => {
-            SW.currentQuestion = 0;
-            SW_showQuestion();
-        });
+    document.getElementById("sw-review-all").onclick = () => {
+        SW.currentQuestion = 0;
+        SW_showQuestion();
+    };
+
+    document.getElementById("sw-result-home").onclick = () => {
+        SW.view = "home";
+        SW_renderApp();
+    };
 }
 
-/* ---------- MAIN SCREEN ---------- */
+/* IMPORTANT QUESTIONS & ANSWERS */
+
+function SW_showImportant() {
+    SW.view = "important";
+
+    const items = SW.important;
+
+    let html = `
+        <section class="quiz-box">
+
+            <h2>${SW_t("important")}</h2>
+    `;
+
+    if (!items.length) {
+        html += `<p>${SW_t("noImportant")}</p>`;
+    }
+
+    items.forEach((item, index) => {
+        html += `
+            <article class="card">
+
+                <h3>
+                    ${index + 1}.
+                    ${SW_escape(SW_local(item.question))}
+                </h3>
+
+                <p>
+                    <b>${SW_t("answer")}:</b>
+                    ${SW_escape(SW_local(item.answer))}
+                </p>
+
+            </article>
+        `;
+    });
+
+    html += `
+            <button id="sw-important-back">
+                ${SW_t("back")}
+            </button>
+
+        </section>
+    `;
+
+    SW_app().innerHTML = html;
+
+    document.getElementById("sw-important-back").onclick = () => {
+        SW.view = "home";
+        SW_renderApp();
+    };
+}
+
+/* MAIN SCREEN */
 
 function SW_renderApp() {
-    const app = SW_app();
-
     const bank = SW_bank();
-    const t = SW_t;
+
+    const subjects =
+        bank[SW.currentClass]?.[SW.board] || {};
 
     let html = `
         <section id="sw-learning">
@@ -549,18 +652,21 @@ function SW_renderApp() {
 
             <h2>STUDY WARRIORS</h2>
 
-            <h3>${t("classes")}</h3>
+            <h3>${SW_t("classes")}</h3>
 
             <div class="cards">
     `;
 
-    ["8", "9", "10"].forEach(classNumber => {
+    ["8", "9", "10"].forEach(number => {
         html += `
             <div class="card">
-                <h3>Class ${classNumber}</h3>
-                <button data-class="${classNumber}">
-                    ${t("select")}
+
+                <h3>Class ${number}</h3>
+
+                <button data-class="${number}">
+                    ${SW_t("select")}
                 </button>
+
             </div>
         `;
     });
@@ -568,27 +674,33 @@ function SW_renderApp() {
     html += `
             </div>
 
-            <h3>${t("board")}</h3>
+            <h3>${SW_t("board")}</h3>
 
             <div class="cards">
+
                 <button data-board="NCERT">NCERT</button>
+
                 <button data-board="BSEB">Bihar Board</button>
+
             </div>
 
-            <h3>${t("subject")}: Class ${SW.currentClass}</h3>
+            <h3>
+                ${SW_t("subject")}: ${SW.currentClass}
+            </h3>
 
             <div class="cards">
     `;
 
-    const subjects = bank[SW.currentClass]?.[SW.board] || {};
-
     Object.keys(subjects).forEach(subject => {
         html += `
             <div class="card">
+
                 <h3>${SW_escape(subject)}</h3>
+
                 <button data-subject="${SW_escape(subject)}">
-                    ${t("select")}
+                    ${SW_t("select")}
                 </button>
+
             </div>
         `;
     });
@@ -598,97 +710,127 @@ function SW_renderApp() {
     if (SW.subject) {
         const chapters = subjects[SW.subject] || {};
 
-        html += `<h3>${t("chapter")}: ${SW_escape(SW.subject)}</h3>`;
-        html += `<div class="cards">`;
+        html += `
+            <h3>
+                ${SW_t("chapter")}: ${SW_escape(SW.subject)}
+            </h3>
+
+            <div class="cards">
+        `;
 
         if (Array.isArray(chapters)) {
             html += `
                 <button data-chapter="default">
-                    ${t("start")}
+                    ${SW_t("start")}
                 </button>
             `;
         } else {
             Object.keys(chapters).forEach(chapter => {
                 html += `
                     <div class="card">
+
                         <h3>${SW_escape(chapter)}</h3>
+
                         <button data-chapter="${SW_escape(chapter)}">
-                            ${t("start")}
+                            ${SW_t("start")}
                         </button>
+
                     </div>
                 `;
             });
         }
 
         html += `</div>`;
+
+        if (SW.chapter && SW.important.length) {
+            html += `
+                <button id="sw-open-important">
+                    ${SW_t("showImportant")}
+                </button>
+            `;
+        }
     }
 
     html += `
             <hr>
 
-            <h2>${t("mentality")}</h2>
+            <h2>${SW_t("mentality")}</h2>
 
             <div class="cards">
     `;
 
-    Object.entries(SW_MENTALITY).forEach(([category, key]) => {
+    Object.keys(SW_MENTALITY).forEach(category => {
         html += `
             <div class="card">
-                <h3>${t(key)}</h3>
-                <button data-mentality="${SW_escape(category)}">
-                    ${t("start")}
+
+                <h3>${SW_escape(category)}</h3>
+
+                <button data-mental="${SW_escape(category)}">
+                    ${SW_t("start")}
                 </button>
+
             </div>
         `;
     });
 
     html += `
             </div>
+
         </section>
     `;
 
-    app.innerHTML = html;
+    SW_app().innerHTML = html;
 
-    document.getElementById("sw-en")
-        .addEventListener("click", () => SW_setLanguage("en"));
+    document.getElementById("sw-en").onclick = () => {
+        SW_setLanguage("en");
+    };
 
-    document.getElementById("sw-hi")
-        .addEventListener("click", () => SW_setLanguage("hi"));
+    document.getElementById("sw-hi").onclick = () => {
+        SW_setLanguage("hi");
+    };
 
     document.querySelectorAll("[data-class]").forEach(button => {
-        button.addEventListener("click", () => {
+        button.onclick = () => {
             SW_selectClass(button.dataset.class);
-        });
+        };
     });
 
     document.querySelectorAll("[data-board]").forEach(button => {
-        button.addEventListener("click", () => {
+        button.onclick = () => {
             SW_selectBoard(button.dataset.board);
-        });
+        };
     });
 
     document.querySelectorAll("[data-subject]").forEach(button => {
-        button.addEventListener("click", () => {
+        button.onclick = () => {
             SW_selectSubject(button.dataset.subject);
-        });
+        };
     });
 
     document.querySelectorAll("[data-chapter]").forEach(button => {
-        button.addEventListener("click", () => {
+        button.onclick = () => {
             SW_selectChapter(button.dataset.chapter);
-        });
+        };
     });
 
-    document.querySelectorAll("[data-mentality]").forEach(button => {
-        button.addEventListener("click", () => {
-            SW_startMentality(button.dataset.mentality);
-        });
+    document.querySelectorAll("[data-mental]").forEach(button => {
+        button.onclick = () => {
+            SW_startMentality(button.dataset.mental);
+        };
     });
+
+    const importantButton =
+        document.getElementById("sw-open-important");
+
+    if (importantButton) {
+        importantButton.onclick = SW_showImportant;
+    }
 }
 
-/* ---------- START WEBSITE ---------- */
+/* START WEBSITE */
 
 document.addEventListener("DOMContentLoaded", () => {
     SW_renderApp();
-    console.log("Study Warriors loaded successfully!");
+
+    console.log("Study Warriors Quiz Engine V2 loaded.");
 });
